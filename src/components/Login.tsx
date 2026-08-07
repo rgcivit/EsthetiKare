@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStore } from '../store/useStore';
 import { ShieldCheck, Lock, Delete } from 'lucide-react';
 
@@ -10,6 +10,16 @@ export const Login: React.FC = () => {
   const [shaking, setShaking] = useState(false);
 
   const activeProfessionals = professionals.filter(p => p.active);
+
+  // Sincronizar el id seleccionado cuando la lista de profesionales se hidrata del almacenamiento local
+  useEffect(() => {
+    if (activeProfessionals.length > 0) {
+      const exists = activeProfessionals.some(p => p.id === selectedProfId);
+      if (!selectedProfId || !exists) {
+        setSelectedProfId(activeProfessionals[0].id);
+      }
+    }
+  }, [activeProfessionals, selectedProfId]);
 
   const handleKeyPress = (num: string) => {
     setError(null);
