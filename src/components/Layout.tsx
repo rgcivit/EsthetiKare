@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, Calendar, Package, ShoppingCart, 
   Wallet, Menu, X, User, AlertTriangle, Settings, UserCheck, LogOut,
@@ -14,6 +14,7 @@ interface LayoutProps {
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { cashSessions, products, currentUser, logout, updateProfessional } = useStore();
 
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -64,6 +65,27 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       setIsChangingPin(false);
       setPinSuccess(null);
     }, 1500);
+  };
+
+  const handleLogoutAttempt = () => {
+    const isRegisterOpen = cashSessions.some((s) => s.status === 'open');
+
+    if (isRegisterOpen) {
+      const confirmArqueo = window.confirm(
+        "¡ATENCIÓN! La Caja Diaria se encuentra ABIERTA.\n\nSe recomienda realizar el arqueo y cierre de caja para que el próximo especialista pueda iniciar su turno con un balance limpio.\n\n¿Deseas ir al módulo de Caja para realizar el arqueo y cierre ahora?\n\n- ACEPTAR: Sí, ir a Caja a hacer Arqueo.\n- CANCELAR: Cerrar sesión de todos modos sin cerrar caja."
+      );
+
+      if (confirmArqueo) {
+        navigate('/caja');
+        return;
+      }
+    } else {
+      if (!window.confirm("¿Deseas cerrar tu sesión y bloquear la terminal?")) {
+        return;
+      }
+    }
+
+    logout();
   };
 
   const activeSession = cashSessions.find((s) => s.status === 'open');
@@ -155,15 +177,11 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
         {/* Manual Lock/Logout Button in Desktop Sidebar */}
         <div className="px-4 py-2 border-t border-aesthetic-200/10">
           <button
-            onClick={() => {
-              if (window.confirm("¿Deseas bloquear la terminal y cerrar tu sesión?")) {
-                logout();
-              }
-            }}
-            className="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 hover:text-rose-700 transition-all border border-transparent hover:border-rose-100/50 cursor-pointer"
+            onClick={handleLogoutAttempt}
+            className="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 hover:text-rose-700 transition-all border border-transparent hover:border-rose-100/50 cursor-pointer text-left"
           >
             <LogOut className="w-4.5 h-4.5 shrink-0" />
-            <span>Bloquear Terminal</span>
+            <span>Cerrar Sesión / Bloquear</span>
           </button>
         </div>
 
@@ -290,14 +308,12 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                       <button
                         onClick={() => {
                           setUserMenuOpen(false);
-                          if (window.confirm("¿Deseas bloquear la terminal y cerrar tu sesión?")) {
-                            logout();
-                          }
+                          handleLogoutAttempt();
                         }}
                         className="w-full flex items-center space-x-2.5 px-4 py-2.5 text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer border-t border-aesthetic-100/30 border-none text-left"
                       >
                         <LogOut className="w-4 h-4" />
-                        <span>Bloquear Terminal</span>
+                        <span>Cerrar Sesión / Bloquear</span>
                       </button>
                     </div>
                   </>
@@ -407,14 +423,12 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  if (window.confirm("¿Deseas bloquear la terminal y cerrar tu sesión?")) {
-                    logout();
-                  }
+                  handleLogoutAttempt();
                 }}
-                className="w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 hover:text-rose-700 transition-all border border-transparent cursor-pointer"
+                className="w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 hover:text-rose-700 transition-all border border-transparent cursor-pointer text-left"
               >
                 <LogOut className="w-4.5 h-4.5 shrink-0" />
-                <span>Bloquear Terminal</span>
+                <span>Cerrar Sesión / Bloquear</span>
               </button>
             </div>
 
