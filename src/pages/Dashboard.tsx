@@ -10,7 +10,7 @@ export const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const { 
     clients, appointments, products, sales, cashSessions, 
-    treatmentTypes, professionals, updateAppointmentStatus 
+    treatmentTypes, professionals, updateAppointmentStatus, currentUser
   } = useStore();
 
   // Active Cash Session
@@ -58,7 +58,7 @@ export const Dashboard: React.FC = () => {
       <div className="bg-gradient-to-r from-aesthetic-200/40 via-aesthetic-100/30 to-aesthetic-50 p-6 md:p-8 rounded-3xl border border-aesthetic-200/20 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
         <div>
           <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#332724]">
-            ¡Hola, Camila!
+            ¡Hola, {currentUser?.name || 'Especialista'}!
           </h1>
           <p className="text-sm text-aesthetic-700/80 mt-1">
             Bienvenido de nuevo. Esto es lo que está ocurriendo hoy, <span className="font-bold text-aesthetic-800">jueves 6 de agosto de 2026</span>.

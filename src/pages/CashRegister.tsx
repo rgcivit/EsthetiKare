@@ -8,17 +8,17 @@ import type { PaymentMethod } from '../types';
 
 export const CashRegister: React.FC = () => {
   const { 
-    cashSessions, openCashRegister, closeCashRegister, addCashTransaction 
+    cashSessions, openCashRegister, closeCashRegister, addCashTransaction, currentUser 
   } = useStore();
 
   const activeSession = cashSessions.find(s => s.status === 'open');
   const closedSessions = cashSessions.filter(s => s.status === 'closed').sort((a,b) => b.openingTime.localeCompare(a.openingTime));
 
   const [openAmount, setOpenAmount] = useState('');
-  const openerName = 'Camila Ortega';
+  const openerName = currentUser?.name || 'Invitado';
   
   const [closeRealAmount, setCloseRealAmount] = useState('');
-  const closerName = 'Camila Ortega';
+  const closerName = currentUser?.name || 'Invitado';
 
   const [isAddingTrans, setIsAddingTrans] = useState(false);
   const [transType, setTransType] = useState<'income' | 'expense'>('expense');
