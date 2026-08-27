@@ -31,6 +31,7 @@ export interface Client {
   anamnesis?: Anamnesis;
   // Map of treatment type ID to available session credits (for session packs)
   sessionBalance: Record<string, number>;
+  lastCommercialContact?: string; // ISO Date of last marketing WhatsApp
 }
 
 export interface SessionParam {
@@ -63,11 +64,45 @@ export interface TreatmentType {
   requiresMachineId?: string; // Links to Cabinet/Machine constraint
 }
 
+export type MachineStatus = 'optimo' | 'mantenimiento' | 'fuera-de-servicio';
+
+export type PackStatus = 'activo' | 'completado' | 'vencido';
+
+export type ServiceReportStatus = 'pendiente' | 'en-reparacion' | 'resuelto';
+
 export interface CabinetMachine {
   id: string;
   name: string;
   description: string;
   active: boolean;
+  modelo?: string;
+  numeroSerie?: string;
+  horasUso?: number;
+  ultimoServiceFecha?: string;
+  proximoServiceSugerido?: string;
+  estado?: MachineStatus;
+}
+
+export interface PurchasedPack {
+  id: string;
+  pacienteId: string;
+  equipoId?: string; // Opcional si no requiere equipo
+  treatmentTypeId: string;
+  nombreTratamiento: string;
+  totalSesiones: number;
+  sesionesConsumidas: number;
+  fechaCaducidad?: string;
+  estado: PackStatus;
+  fechaCompra: string;
+}
+
+export interface ServiceReport {
+  id: string;
+  equipoId: string;
+  fecha: string;
+  descripcionFalla: string;
+  estadoReporte: ServiceReportStatus;
+  adjuntoFoto?: string;
 }
 
 export interface Professional {

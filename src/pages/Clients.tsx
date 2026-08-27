@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import { useStore } from '../store/useStore';
 import { 
   Plus, Search, FileText, Camera, ChevronRight, 
-  Save, Shield, Users 
+  Save, Shield, Users, MessageSquare, CheckCircle, Smartphone
 } from 'lucide-react';
-import type { SkinPhototype } from '../types';
+import type { SkinPhototype, PackStatus } from '../types';
 
 export const Clients: React.FC = () => {
   const { 
     clients, addClient, 
     updateClientAnamnesis, evolutionaryRecords, addEvolutionaryRecord,
-    treatmentTypes, professionals
+    treatmentTypes, professionals,
+    purchasedPacks, consumeSession
   } = useStore();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -18,6 +19,7 @@ export const Clients: React.FC = () => {
   const [isAddingClient, setIsAddingClient] = useState(false);
   const [isAddingRecord, setIsAddingRecord] = useState(false);
   const [activeTab, setActiveTab] = useState<'info' | 'anamnesis' | 'evolution'>('info');
+  const [comparisonRecord, setComparisonRecord] = useState<EvolutionaryRecord | null>(null);
 
   // New client form state
   const [newClient, setNewClient] = useState({
@@ -50,8 +52,31 @@ export const Clients: React.FC = () => {
 
   const filteredClients = clients.filter(c => 
     `${c.firstName} ${c.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.dni.includes(searchTerm)
+    c.dni.includes(searchTerm) ||
+    (c.phone && c.phone.includes(searchTerm))
   );
+
+  const handleConsumeSession = (packId: string) => {
+    const pack = purchasedPacks.find(p => p.id === packId);
+    if (!pack || !selectedClient) return;
+
+    if (pack.sesionesConsumidas >= pack.totalSesiones) {
+      alert("Este pack ya no tiene sesiones disponibles.");
+      return;
+    }
+
+    if (confirm(`¿Confirmas el descuento de 1 sesión de ${pack.nombreTratamiento}?`)) {
+      consumeSession(packId);
+
+      const remaining = pack.totalSesiones - (pack.sesionesConsumidas + 1);
+      const sessionNum = pack.sesionesConsumidas + 1;
+
+      if (confirm("¿Deseas enviar el comprobante de sesión por WhatsApp?")) {
+        const message = `Hola ${selectedClient.firstName}, se registró la sesión N° ${sessionNum} de tu tratamiento ${pack.nombreTratamiento}. Te quedan ${remaining} sesiones disponibles. ¡Nos vemos la próxima!`;
+        window.open(`https://wa.me/${selectedClient.phone?.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
+      }
+    }
+  };
 
   const handleCreateClient = (e: React.FormEvent) => {
     e.preventDefault();
@@ -500,27 +525,70 @@ export const Clients: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Session Balances / Packs credit */}
+                  {/* Session Balances / Roadmap of Purchased Packs */}
                   <div className="bg-aesthetic-100/20 rounded-2xl p-5 border border-aesthetic-200/20 space-y-4">
                     <h4 className="text-xs font-bold text-[#332724] uppercase tracking-wider flex items-center space-x-1.5">
                       <span className="w-2 h-2 rounded-full bg-aesthetic-400"></span>
-                      <span>Prepagos y Sesiones Disponibles</span>
+                      <span>Roadmap de Sesiones y Packs</span>
                     </h4>
-                    {Object.keys(selectedClient.sessionBalance).length === 0 ? (
-                      <p className="text-xs text-aesthetic-500/80 font-medium">El cliente no dispone de packs de sesiones activos.</p>
+
+                    {purchasedPacks.filter(p => p.pacienteId === selectedClient.id).length === 0 ? (
+                      <p className="text-xs text-aesthetic-500/80 font-medium text-center py-4 bg-white/50 rounded-xl">No hay packs de sesiones activos para este cliente.</p>
                     ) : (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {Object.entries(selectedClient.sessionBalance).map(([treatId, balance]) => {
-                          const treatment = treatmentTypes.find(t => t.id === treatId);
-                          return (
-                            <div key={treatId} className="bg-white/60 p-3.5 rounded-xl border border-aesthetic-200/10 shadow-sm flex items-center justify-between">
-                              <span className="text-xs font-bold text-[#332724] truncate max-w-[150px]">{treatment?.name || 'Tratamiento'}</span>
-                              <span className={`text-xs font-extrabold px-3 py-1 rounded-full ${balance > 0 ? 'bg-aesthetic-100 text-aesthetic-700' : 'bg-[#f7f4f0] text-aesthetic-400'}`}>
-                                {balance} disponibles
-                              </span>
-                            </div>
-                          );
-                        })}
+                      <div className="space-y-4">
+                        {purchasedPacks
+                          .filter(p => p.pacienteId === selectedClient.id)
+                          .map((pack) => {
+                            const remaining = pack.totalSesiones - pack.sesionesConsumidas;
+                            return (
+                              <div key={pack.id} className="bg-white/70 p-4 rounded-xl border border-aesthetic-200/10 shadow-sm space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <div className="min-w-0 pr-2">
+                                    <h5 className="text-xs font-black text-[#332724] uppercase truncate">{pack.nombreTratamiento}</h5>
+                                    <p className="text-[10px] text-aesthetic-500 font-bold uppercase tracking-tighter">
+                                      {pack.estado === 'activo' ? 'En Curso' : 'Completado'} • {pack.sesionesConsumidas}/{pack.totalSesiones} Sesiones
+                                    </p>
+                                  </div>
+                                  {pack.estado === 'activo' && (
+                                    <button
+                                      onClick={() => handleConsumeSession(pack.id)}
+                                      className="flex items-center space-x-1 bg-aesthetic-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-black hover:bg-aesthetic-600 transition-all cursor-pointer shadow-sm border-none"
+                                    >
+                                      <CheckCircle className="w-3.5 h-3.5" />
+                                      <span>Descontar Sesión</span>
+                                    </button>
+                                  )}
+                                </div>
+
+                                {/* Visual Roadmap (Dots/Checkboxes) */}
+                                <div className="flex flex-wrap gap-2 pt-1">
+                                  {Array.from({ length: pack.totalSesiones }).map((_, i) => (
+                                    <div
+                                      key={i}
+                                      className={`w-6 h-6 rounded-lg flex items-center justify-center border transition-all ${
+                                        i < pack.sesionesConsumidas
+                                          ? 'bg-aesthetic-500 border-aesthetic-600 text-white shadow-inner'
+                                          : 'bg-[#faf6f7] border-aesthetic-200 text-aesthetic-300'
+                                      }`}
+                                    >
+                                      {i < pack.sesionesConsumidas ? (
+                                        <CheckCircle className="w-3.5 h-3.5" />
+                                      ) : (
+                                        <span className="text-[10px] font-bold">{i + 1}</span>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+
+                                {remaining === 1 && pack.estado === 'activo' && (
+                                  <div className="bg-amber-50 border border-amber-100 rounded-lg p-2 flex items-center space-x-2">
+                                    <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
+                                    <span className="text-[10px] font-bold text-amber-600 uppercase">¡Última sesión disponible!</span>
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
                       </div>
                     )}
                   </div>
@@ -605,24 +673,47 @@ export const Clients: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Informed Consent Confirmation */}
-                  <div className="p-4 rounded-xl border border-aesthetic-200/10 bg-aesthetic-100/10 flex items-center justify-between">
-                    <div className="flex items-center space-x-3 pr-4">
-                      <Shield className="w-5 h-5 text-aesthetic-500 shrink-0" />
-                      <div>
-                        <p className="text-xs font-bold text-[#332724]">Firma de Consentimiento Informado</p>
-                        <p className="text-[10px] text-aesthetic-500 leading-tight">El cliente comprende y asume los cuidados post tratamiento.</p>
+                  {/* Informed Consent Confirmation & Signature */}
+                  <div className="space-y-4">
+                    <div className="p-4 rounded-xl border border-aesthetic-200/10 bg-aesthetic-100/10 flex items-center justify-between">
+                      <div className="flex items-center space-x-3 pr-4">
+                        <Shield className="w-5 h-5 text-aesthetic-500 shrink-0" />
+                        <div>
+                          <p className="text-xs font-bold text-[#332724]">Firma de Consentimiento Informado</p>
+                          <p className="text-[10px] text-aesthetic-500 leading-tight">El cliente comprende y asume los cuidados post tratamiento.</p>
+                        </div>
                       </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          name="consentSigned"
+                          defaultChecked={selectedClient.anamnesis?.consentSigned || false}
+                          className="sr-only peer"
+                        />
+                        <div className="w-11 h-6 bg-aesthetic-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:width-5 after:transition-all peer-checked:bg-aesthetic-500"></div>
+                      </label>
                     </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input 
-                        type="checkbox" 
-                        name="consentSigned" 
-                        defaultChecked={selectedClient.anamnesis?.consentSigned || false} 
-                        className="sr-only peer"
-                      />
-                      <div className="w-11 h-6 bg-aesthetic-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:width-5 after:transition-all peer-checked:bg-aesthetic-500"></div>
-                    </label>
+
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-aesthetic-500 uppercase tracking-widest">Firma Digital del Paciente</label>
+                      <div className="h-32 w-full rounded-2xl border-2 border-dashed border-aesthetic-200 bg-[#faf6f7] flex items-center justify-center relative group overflow-hidden">
+                        {selectedClient.anamnesis?.consentSigned ? (
+                           <div className="flex flex-col items-center space-y-1">
+                              <CheckCircle className="w-8 h-8 text-emerald-500/30" />
+                              <span className="text-[10px] font-bold text-emerald-600/50 uppercase">Firmado Digitalmente</span>
+                           </div>
+                        ) : (
+                          <div className="flex flex-col items-center space-y-1 text-aesthetic-300 group-hover:text-aesthetic-400 transition-colors">
+                            <Plus className="w-6 h-6" />
+                            <span className="text-[10px] font-bold uppercase tracking-wider">Tocar para firmar en pantalla</span>
+                          </div>
+                        )}
+                        <canvas className="absolute inset-0 w-full h-full opacity-0 cursor-crosshair"></canvas>
+                      </div>
+                      <p className="text-[9px] text-aesthetic-400 text-center font-bold italic">
+                        Al firmar, el paciente acepta los términos y condiciones del servicio RGCivit Esthetic.
+                      </p>
+                    </div>
                   </div>
 
                   {/* Submission buttons */}
@@ -702,15 +793,18 @@ export const Clients: React.FC = () => {
                             </div>
 
                             {/* Before/After Gallery */}
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-4 group cursor-pointer" onClick={() => setComparisonRecord(record)}>
                               <div className="space-y-1">
                                 <span className="text-[9px] font-bold text-aesthetic-500 uppercase">Antes</span>
                                 <div className="h-40 rounded-xl overflow-hidden border border-aesthetic-200/10 relative bg-[#f7f4f0]">
                                   <img 
                                     src={record.beforePhotos[0]} 
                                     alt="Antes" 
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover transition-transform group-hover:scale-105"
                                   />
+                                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
+                                    <Search className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                                  </div>
                                 </div>
                               </div>
                               <div className="space-y-1">
@@ -719,8 +813,11 @@ export const Clients: React.FC = () => {
                                   <img 
                                     src={record.afterPhotos[0]} 
                                     alt="Después" 
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover transition-transform group-hover:scale-105"
                                   />
+                                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
+                                    <Search className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -747,6 +844,47 @@ export const Clients: React.FC = () => {
           </div>
         )}
       </div>
+      {/* Photo Comparison Modal */}
+      {comparisonRecord && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#500732]/90 backdrop-blur-md">
+          <div className="w-full max-w-5xl bg-[#faf6f7] rounded-3xl overflow-hidden shadow-2xl animate-slide-in">
+            <div className="p-6 border-b border-aesthetic-200/10 flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-black text-[#332724] uppercase tracking-wider">Comparador Evolutivo</h3>
+                <p className="text-[10px] text-aesthetic-500 font-bold">Sesión del {comparisonRecord.date}</p>
+              </div>
+              <button
+                onClick={() => setComparisonRecord(null)}
+                className="p-2 rounded-xl text-aesthetic-400 hover:bg-aesthetic-100 transition-colors cursor-pointer"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 h-[70vh]">
+              <div className="flex flex-col space-y-2">
+                <span className="text-[10px] font-black text-aesthetic-500 uppercase tracking-widest text-center">Antes</span>
+                <div className="flex-1 rounded-2xl overflow-hidden border-2 border-aesthetic-200 shadow-inner">
+                  <img src={comparisonRecord.beforePhotos[0]} className="w-full h-full object-contain bg-black/5" alt="Antes full" />
+                </div>
+              </div>
+              <div className="flex flex-col space-y-2">
+                <span className="text-[10px] font-black text-aesthetic-500 uppercase tracking-widest text-center">Después</span>
+                <div className="flex-1 rounded-2xl overflow-hidden border-2 border-aesthetic-500 shadow-md">
+                  <img src={comparisonRecord.afterPhotos[0]} className="w-full h-full object-contain bg-black/5" alt="Después full" />
+                </div>
+              </div>
+            </div>
+            <div className="p-6 bg-aesthetic-100/30 flex justify-center">
+               <button
+                 onClick={() => setComparisonRecord(null)}
+                 className="px-8 py-3 bg-[#332724] text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg"
+               >
+                 Cerrar Comparador
+               </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

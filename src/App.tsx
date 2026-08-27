@@ -5,6 +5,8 @@ import { Dashboard } from './pages/Dashboard';
 import { Clients } from './pages/Clients';
 import { Agenda } from './pages/Agenda';
 import { Inventory } from './pages/Inventory';
+import { Machines } from './pages/Machines';
+import { Marketing } from './pages/Marketing';
 import { POS } from './pages/POS';
 import { CashRegister } from './pages/CashRegister';
 import { Config } from './pages/Config';
@@ -28,6 +30,8 @@ function App() {
           <Route path="/clientes" element={<Clients />} />
           <Route path="/agenda" element={<Agenda />} />
           <Route path="/inventario" element={<Inventory />} />
+          <Route path="/equipos" element={<Machines />} />
+          <Route path="/marketing" element={<Marketing />} />
           <Route path="/pos" element={<POS />} />
           <Route path="/caja" element={<CashRegister />} />
           {/* Admin Protected Routes */}

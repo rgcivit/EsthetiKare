@@ -3,7 +3,8 @@ import { persist } from 'zustand/middleware';
 import type { 
   Client, Appointment, EvolutionaryRecord, Product, 
   TreatmentType, CabinetMachine, Professional, PackOfSessions, 
-  Sale, CashRegisterSession, AppointmentStatus, PaymentMethod
+  Sale, CashRegisterSession, AppointmentStatus, PaymentMethod,
+  PurchasedPack, ServiceReport, PackStatus, MachineStatus, ServiceReportStatus
 } from '../types';
 
 interface StoreState {
@@ -17,7 +18,9 @@ interface StoreState {
   packs: PackOfSessions[];
   sales: Sale[];
   cashSessions: CashRegisterSession[];
-  
+  purchasedPacks: PurchasedPack[];
+  serviceReports: ServiceReport[];
+
   // Authentication / Active Session
   currentUser: Professional | null;
   login: (pin: string) => { success: boolean; error?: string };
@@ -31,7 +34,17 @@ interface StoreState {
   updateClient: (id: string, client: Partial<Client>) => void;
   deleteClient: (id: string) => void;
   updateClientAnamnesis: (id: string, anamnesis: Client['anamnesis']) => void;
-  
+
+  // Purchased Packs CRUD
+  addPurchasedPack: (pack: Omit<PurchasedPack, 'id'>) => void;
+  updatePurchasedPack: (id: string, pack: Partial<PurchasedPack>) => void;
+  deletePurchasedPack: (id: string) => void;
+  consumeSession: (packId: string) => void;
+
+  // Service Reports CRUD
+  addServiceReport: (report: Omit<ServiceReport, 'id'>) => void;
+  updateServiceReport: (id: string, report: Partial<ServiceReport>) => void;
+
   // Evolutionary records
   addEvolutionaryRecord: (record: Omit<EvolutionaryRecord, 'id'>) => void;
   updateEvolutionaryRecord: (id: string, record: Partial<EvolutionaryRecord>) => void;
@@ -84,9 +97,37 @@ const mockProfessionals: Professional[] = [
 ];
 
 const mockCabinets: CabinetMachine[] = [
-  { id: 'cab-1', name: 'Gabinete 1 - Soprano Titanium', description: 'Depilación láser de última generación', active: true },
-  { id: 'cab-2', name: 'Gabinete 2 - Vacuum & Facial Premium', description: 'Tratamientos faciales, microdermoabrasión y vacuum', active: true },
-  { id: 'cab-3', name: 'Gabinete 3 - Consultorio Clínico', description: 'Inyectables y consultas generales', active: true },
+  {
+    id: 'cab-1',
+    name: 'Gabinete 1 - Soprano Titanium',
+    description: 'Depilación láser de última generación',
+    active: true,
+    modelo: 'Soprano Titanium Platinum',
+    numeroSerie: 'SN-SOP-2024-001',
+    horasUso: 450,
+    ultimoServiceFecha: '2026-05-10',
+    proximoServiceSugerido: '2026-11-10',
+    estado: 'optimo' as MachineStatus
+  },
+  {
+    id: 'cab-2',
+    name: 'Gabinete 2 - Vacuum & Facial Premium',
+    description: 'Tratamientos faciales, microdermoabrasión y vacuum',
+    active: true,
+    modelo: 'Body Health BHS 156',
+    numeroSerie: 'SN-BHS-156-882',
+    horasUso: 120,
+    ultimoServiceFecha: '2026-06-15',
+    proximoServiceSugerido: '2026-12-15',
+    estado: 'optimo' as MachineStatus
+  },
+  {
+    id: 'cab-3',
+    name: 'Gabinete 3 - Consultorio Clínico',
+    description: 'Inyectables y consultas generales',
+    active: true,
+    estado: 'optimo' as MachineStatus
+  },
 ];
 
 const mockTreatmentTypes: TreatmentType[] = [
@@ -310,6 +351,8 @@ export const useStore = create<StoreState>()(persist((set, get) => ({
   packs: mockPacks,
   sales: mockSales,
   cashSessions: mockCashSessions,
+  purchasedPacks: [],
+  serviceReports: [],
 
   // Authentication / Active Session
   currentUser: null,
@@ -404,6 +447,68 @@ export const useStore = create<StoreState>()(persist((set, get) => ({
           anamnesis: anamnesis ? { ...anamnesis, consentDate: anamnesis.consentSigned ? new Date().toISOString().split('T')[0] : undefined } : undefined 
         } : c
       )
+    }));
+  },
+
+  // Purchased Packs CRUD
+  addPurchasedPack: (pack) => {
+    const newPack: PurchasedPack = { ...pack, id: `pack-purchased-${Date.now()}` };
+    set((state) => ({
+      purchasedPacks: [...state.purchasedPacks, newPack]
+    }));
+  },
+
+  updatePurchasedPack: (id, updatedFields) => {
+    set((state) => ({
+      purchasedPacks: state.purchasedPacks.map((p) => (p.id === id ? { ...p, ...updatedFields } : p))
+    }));
+  },
+
+  deletePurchasedPack: (id) => {
+    set((state) => ({
+      purchasedPacks: state.purchasedPacks.filter((p) => p.id !== id)
+    }));
+  },
+
+  consumeSession: (packId) => {
+    set((state) => {
+      const pack = state.purchasedPacks.find(p => p.id === packId);
+      if (!pack || pack.sesionesConsumidas >= pack.totalSesiones) return {};
+
+      const newConsumidas = pack.sesionesConsumidas + 1;
+      const newEstado = (newConsumidas >= pack.totalSesiones ? 'completado' : 'activo') as PackStatus;
+
+      const updatedPacks = state.purchasedPacks.map(p =>
+        p.id === packId ? { ...p, sesionesConsumidas: newConsumidas, estado: newEstado } : p
+      );
+
+      // Also update client session balance for backward compatibility
+      const updatedClients = state.clients.map(c => {
+        if (c.id === pack.pacienteId) {
+          const currentBalance = c.sessionBalance[pack.treatmentTypeId] || 0;
+          return {
+            ...c,
+            sessionBalance: { ...c.sessionBalance, [pack.treatmentTypeId]: Math.max(0, currentBalance - 1) }
+          };
+        }
+        return c;
+      });
+
+      return { purchasedPacks: updatedPacks, clients: updatedClients };
+    });
+  },
+
+  // Service Reports CRUD
+  addServiceReport: (report) => {
+    const newReport: ServiceReport = { ...report, id: `report-${Date.now()}` };
+    set((state) => ({
+      serviceReports: [...state.serviceReports, newReport]
+    }));
+  },
+
+  updateServiceReport: (id, updatedFields) => {
+    set((state) => ({
+      serviceReports: state.serviceReports.map((r) => (r.id === id ? { ...r, ...updatedFields } : r))
     }));
   },
 
@@ -577,17 +682,34 @@ export const useStore = create<StoreState>()(persist((set, get) => ({
         return p;
       });
 
-      // 2. Increment session balance if they purchased session packs
+      // 2. Increment session balance and create PurchasedPack if they purchased session packs
+      const newPurchasedPacks: PurchasedPack[] = [];
       const updatedClients = state.clients.map((c) => {
         if (c.id === saleData.clientId) {
           const updatedBalance = { ...c.sessionBalance };
           
           saleData.items.forEach((item) => {
             if (item.type === 'pack') {
-              const pack = state.packs.find((p) => p.id === item.id);
-              if (pack) {
-                const current = updatedBalance[pack.treatmentTypeId] || 0;
-                updatedBalance[pack.treatmentTypeId] = current + (pack.sessionCount * item.quantity);
+              const packTemplate = state.packs.find((p) => p.id === item.id);
+              if (packTemplate) {
+                const current = updatedBalance[packTemplate.treatmentTypeId] || 0;
+                updatedBalance[packTemplate.treatmentTypeId] = current + (packTemplate.sessionCount * item.quantity);
+
+                // Create technical PurchasedPack records
+                for (let i = 0; i < item.quantity; i++) {
+                  newPurchasedPacks.push({
+                    id: `pack-purchased-${Date.now()}-${i}`,
+                    pacienteId: c.id,
+                    treatmentTypeId: packTemplate.treatmentTypeId,
+                    nombreTratamiento: packTemplate.name,
+                    totalSesiones: packTemplate.sessionCount,
+                    sesionesConsumidas: 0,
+                    estado: 'activo' as PackStatus,
+                    fechaCompra: new Date().toISOString(),
+                    // Sugerimos equipo si el tipo de tratamiento lo requiere
+                    equipoId: packTemplate.treatmentTypeId.includes('laser') ? 'cab-1' : undefined
+                  });
+                }
               }
             }
           });
@@ -622,7 +744,8 @@ export const useStore = create<StoreState>()(persist((set, get) => ({
         sales: [...state.sales, newSale],
         products: updatedProducts,
         clients: updatedClients,
-        cashSessions: updatedCashSessions
+        cashSessions: updatedCashSessions,
+        purchasedPacks: [...state.purchasedPacks, ...newPurchasedPacks]
       };
     });
   },

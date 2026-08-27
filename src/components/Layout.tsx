@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, Calendar, Package, ShoppingCart, 
   Wallet, Menu, X, User, AlertTriangle, Settings, UserCheck, LogOut,
-  KeyRound
+  KeyRound, HardDrive, Zap
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 
@@ -128,6 +128,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
     { name: 'Fichas', href: '/clientes', icon: Users },
     { name: 'Agenda', href: '/agenda', icon: Calendar },
+    { name: 'Equipos', href: '/equipos', icon: HardDrive },
+    { name: 'Reactivación', href: '/marketing', icon: Zap },
     { name: 'Inventario', href: '/inventario', icon: Package },
     { name: 'POS', href: '/pos', icon: ShoppingCart },
     { name: 'Caja', href: '/caja', icon: Wallet },
