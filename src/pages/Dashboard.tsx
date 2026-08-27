@@ -18,7 +18,7 @@ export const Dashboard: React.FC = () => {
   
   // Calculate stats
   const activeClientsCount = clients.filter(c => c.active).length;
-  const todayStr = '2026-08-06'; // Seeded date
+  const todayStr = new Date().toISOString().split('T')[0];
   const todayAppointments = appointments.filter(a => a.dateTime.startsWith(todayStr));
   const lowStockProducts = products.filter(p => p.stock <= p.minStock);
 
@@ -61,7 +61,7 @@ export const Dashboard: React.FC = () => {
             ¡Hola, {currentUser?.name || 'Especialista'}!
           </h1>
           <p className="text-sm text-aesthetic-700/80 mt-1">
-            Bienvenido de nuevo. Esto es lo que está ocurriendo hoy, <span className="font-bold text-aesthetic-800">jueves 6 de agosto de 2026</span>.
+            Bienvenido de nuevo. Esto es lo que está ocurriendo hoy, <span className="font-bold text-aesthetic-800 capitalize">{new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date())}</span>.
           </p>
         </div>
         <div className="flex flex-wrap gap-3">

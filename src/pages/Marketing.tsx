@@ -13,8 +13,8 @@ export const Marketing: React.FC = () => {
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
   const [editedMessage, setEditedMessage] = useState('');
 
-  // Fixed date for the demo context: Aug 6, 2026
-  const TODAY = new Date('2026-08-06');
+  // Use real current date
+  const TODAY = new Date();
 
   // Segmentation Logic
   const segmentedData = useMemo(() => {

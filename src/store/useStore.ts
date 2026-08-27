@@ -235,7 +235,7 @@ const mockAppointments: Appointment[] = [
     professionalId: 'prof-2',
     treatmentTypeId: 'treat-1',
     cabinetId: 'cab-1',
-    dateTime: '2026-08-06T09:00:00',
+    dateTime: '2026-08-27T09:00:00',
     durationMin: 15,
     status: 'completed',
     notes: 'Controlar potencia en axila izquierda.'
@@ -246,7 +246,7 @@ const mockAppointments: Appointment[] = [
     professionalId: 'prof-2',
     treatmentTypeId: 'treat-3',
     cabinetId: 'cab-2',
-    dateTime: '2026-08-06T10:30:00',
+    dateTime: '2026-08-27T10:30:00',
     durationMin: 60,
     status: 'in-progress',
   },
@@ -256,7 +256,7 @@ const mockAppointments: Appointment[] = [
     professionalId: 'prof-3',
     treatmentTypeId: 'treat-5',
     cabinetId: 'cab-3',
-    dateTime: '2026-08-06T14:00:00',
+    dateTime: '2026-08-27T14:00:00',
     durationMin: 30,
     status: 'confirmed',
     notes: 'Primera sesión de peptonas en glúteos.'
@@ -267,7 +267,7 @@ const mockAppointments: Appointment[] = [
     professionalId: 'prof-1',
     treatmentTypeId: 'treat-2',
     cabinetId: 'cab-1',
-    dateTime: '2026-08-06T15:30:00',
+    dateTime: '2026-08-27T15:30:00',
     durationMin: 45,
     status: 'pending'
   }
@@ -288,7 +288,7 @@ const mockPacks: PackOfSessions[] = [
 const mockSales: Sale[] = [
   {
     id: 'sale-1',
-    date: '2026-08-05T18:30:00',
+    date: '2026-08-26T18:30:00',
     clientId: 'client-1',
     items: [
       { id: 'prod-1', name: 'Crema Hidratante con Ácido Hialurónico', type: 'product', quantity: 1, unitPrice: 4500, totalPrice: 4500 },
@@ -300,7 +300,7 @@ const mockSales: Sale[] = [
   },
   {
     id: 'sale-2',
-    date: '2026-08-06T10:00:00',
+    date: '2026-08-27T10:00:00',
     clientId: 'client-2',
     items: [
       { id: 'prod-3', name: 'Suplemento Colágeno Hidrolizado', type: 'product', quantity: 2, unitPrice: 8000, totalPrice: 16000 }
@@ -314,14 +314,14 @@ const mockSales: Sale[] = [
 const mockCashSessions: CashRegisterSession[] = [
   {
     id: 'cash-session-1',
-    openingTime: '2026-08-06T08:00:00',
+    openingTime: '2026-08-27T08:00:00',
     openedBy: 'Camila Ortega',
     openingAmount: 15000,
     status: 'open',
     transactions: [
       {
         id: 'trans-1',
-        time: '2026-08-06T10:05:00',
+        time: '2026-08-27T10:05:00',
         type: 'income',
         amount: 16000,
         description: 'Venta Prod. - Colágeno Hidrolizado x2 (María Rojas)',
@@ -330,7 +330,7 @@ const mockCashSessions: CashRegisterSession[] = [
       },
       {
         id: 'trans-2',
-        time: '2026-08-06T11:15:00',
+        time: '2026-08-27T11:15:00',
         type: 'expense',
         amount: 3200,
         description: 'Compra insumos: Cafetería y servilletas de papel',
