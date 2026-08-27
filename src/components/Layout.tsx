@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
-  LayoutDashboard, Users, Calendar, Package, ShoppingCart, 
+  LayoutDashboard, Users, Calendar, Package, ShoppingCart,
   Wallet, Menu, X, User, AlertTriangle, Settings, UserCheck, LogOut,
   KeyRound, HardDrive, Zap, BookOpen
 } from 'lucide-react';
@@ -132,8 +132,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: 'Reactivación', href: '/marketing', icon: Zap },
     { name: 'Inventario', href: '/inventario', icon: Package },
     { name: 'POS', href: '/pos', icon: ShoppingCart },
-    { name: 'Caja', href: '/caja', icon: Wallet },
     { name: 'Manual', href: '/MANUAL_DE_USUARIO.html', icon: BookOpen, external: true },
+    { name: 'Caja', href: '/caja', icon: Wallet },
     ...(isAdmin ? [
       { name: 'Especialistas', href: '/empleados', icon: UserCheck },
       { name: 'Ajustes', href: '/config', icon: Settings },
