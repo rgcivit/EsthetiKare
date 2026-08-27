@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import {
   HardDrive, Wrench, AlertTriangle, CheckCircle2,
-  Clock, Hash, Calendar, Camera, MessageSquare, ExternalLink, X
+  Clock, Hash, Calendar, Camera, MessageSquare, X
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import type { CabinetMachine, MachineStatus, ServiceReportStatus } from '../types';
 
 export const Machines: React.FC = () => {
-  const { cabinets, addServiceReport, updatePurchasedPack, serviceReports } = useStore();
+  const { cabinets, addServiceReport } = useStore();
   const [selectedMachine, setSelectedMachine] = useState<CabinetMachine | null>(null);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [reportDescription, setReportDescription] = useState('');

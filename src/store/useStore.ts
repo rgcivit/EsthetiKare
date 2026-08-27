@@ -4,7 +4,7 @@ import type {
   Client, Appointment, EvolutionaryRecord, Product, 
   TreatmentType, CabinetMachine, Professional, PackOfSessions, 
   Sale, CashRegisterSession, AppointmentStatus, PaymentMethod,
-  PurchasedPack, ServiceReport, PackStatus, MachineStatus, ServiceReportStatus
+  PurchasedPack, ServiceReport, PackStatus, MachineStatus
 } from '../types';
 
 interface StoreState {
@@ -60,7 +60,12 @@ interface StoreState {
   updateProduct: (id: string, product: Partial<Product>) => void;
   deleteProduct: (id: string) => void;
   adjustProductStock: (id: string, amount: number) => void;
-  
+
+  // Session Packs CRUD
+  addPack: (pack: Omit<PackOfSessions, 'id'>) => void;
+  updatePack: (id: string, pack: Partial<PackOfSessions>) => void;
+  deletePack: (id: string) => void;
+
   // Professionals CRUD
   addProfessional: (prof: Omit<Professional, 'id' | 'active'>) => void;
   updateProfessional: (id: string, prof: Partial<Professional>) => void;
@@ -632,6 +637,25 @@ export const useStore = create<StoreState>()(persist((set, get) => ({
       products: state.products.map((p) => 
         p.id === id ? { ...p, stock: Math.max(0, p.stock + amount) } : p
       )
+    }));
+  },
+
+  // Session Packs CRUD implementation
+  addPack: (packData) => {
+    set((state) => ({
+      packs: [...state.packs, { ...packData, id: `pack-${Date.now()}` }]
+    }));
+  },
+
+  updatePack: (id, updatedFields) => {
+    set((state) => ({
+      packs: state.packs.map((p) => (p.id === id ? { ...p, ...updatedFields } : p))
+    }));
+  },
+
+  deletePack: (id) => {
+    set((state) => ({
+      packs: state.packs.filter((p) => p.id !== id)
     }));
   },
 

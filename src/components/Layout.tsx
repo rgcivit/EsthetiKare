@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, Calendar, Package, ShoppingCart, 
   Wallet, Menu, X, User, AlertTriangle, Settings, UserCheck, LogOut,
-  KeyRound, HardDrive, Zap
+  KeyRound, HardDrive, Zap, BookOpen
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 
@@ -133,6 +133,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: 'Inventario', href: '/inventario', icon: Package },
     { name: 'POS', href: '/pos', icon: ShoppingCart },
     { name: 'Caja', href: '/caja', icon: Wallet },
+    { name: 'Manual', href: '/MANUAL_DE_USUARIO.html', icon: BookOpen, external: true },
     ...(isAdmin ? [
       { name: 'Especialistas', href: '/empleados', icon: UserCheck },
       { name: 'Ajustes', href: '/config', icon: Settings },
@@ -157,8 +158,22 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
         {/* Navigation Links */}
         <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
-          {navigation.map((item) => {
+          {navigation.map((item: any) => {
             const isActive = location.pathname === item.href;
+            if (item.external) {
+              return (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 text-aesthetic-700/80 hover:bg-aesthetic-100/50 hover:text-aesthetic-900"
+                >
+                  <item.icon className="w-5 h-5 text-aesthetic-400/80" />
+                  <span>{item.name}</span>
+                </a>
+              );
+            }
             return (
               <Link
                 key={item.name}
@@ -400,8 +415,22 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
 
             <nav className="flex-1 space-y-1.5 overflow-y-auto">
-              {navigation.map((item) => {
+              {navigation.map((item: any) => {
                 const isActive = location.pathname === item.href;
+                if (item.external) {
+                  return (
+                    <a
+                      key={item.name}
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all text-aesthetic-700/80 hover:bg-aesthetic-100/50"
+                    >
+                      <item.icon className="w-5 h-5 text-aesthetic-400" />
+                      <span>{item.name}</span>
+                    </a>
+                  );
+                }
                 return (
                   <Link
                     key={item.name}

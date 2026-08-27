@@ -1,15 +1,24 @@
 import React, { useState } from 'react';
 import { useStore } from '../store/useStore';
 import { 
-  Package, Search, Plus, Tag 
+  Package, Search, Plus, Tag, Edit2, Trash2, X
 } from 'lucide-react';
-import type { ProductCategory } from '../types';
+import type { ProductCategory, Product, PackOfSessions } from '../types';
 
 export const Inventory: React.FC = () => {
-  const { products, addProduct, packs, treatmentTypes } = useStore();
+  const {
+    products, addProduct, updateProduct, deleteProduct,
+    packs, addPack, updatePack, deletePack,
+    treatmentTypes
+  } = useStore();
+
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [isAddingProduct, setIsAddingProduct] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+
+  const [isAddingPack, setIsAddingPack] = useState(false);
+  const [editingPack, setEditingPack] = useState<PackOfSessions | null>(null);
 
   // New product form state
   const [newProd, setNewProd] = useState({
@@ -21,6 +30,14 @@ export const Inventory: React.FC = () => {
     stock: 0,
     minStock: 0,
     category: 'cream' as ProductCategory
+  });
+
+  // New pack form state
+  const [newPack, setNewPack] = useState({
+    name: '',
+    treatmentTypeId: treatmentTypes[0]?.id || '',
+    sessionCount: 6,
+    price: 0
   });
 
   const filteredProducts = products.filter(p => {
@@ -36,7 +53,15 @@ export const Inventory: React.FC = () => {
       return;
     }
 
-    addProduct(newProd);
+    if (editingProduct) {
+      updateProduct(editingProduct.id, newProd);
+      setEditingProduct(null);
+      alert("Producto actualizado con éxito.");
+    } else {
+      addProduct(newProd);
+      alert("Producto agregado con éxito.");
+    }
+
     setIsAddingProduct(false);
     setNewProd({
       code: '',
@@ -48,7 +73,55 @@ export const Inventory: React.FC = () => {
       minStock: 0,
       category: 'cream'
     });
-    alert("Producto agregado con éxito.");
+  };
+
+  const handleDeleteProduct = (id: string) => {
+    if (confirm("¿Estás seguro de eliminar este producto del inventario?")) {
+      deleteProduct(id);
+    }
+  };
+
+  const handleEditProduct = (prod: Product) => {
+    setEditingProduct(prod);
+    setNewProd({ ...prod });
+    setIsAddingProduct(true);
+  };
+
+  const handleAddPackSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newPack.name || newPack.price <= 0) {
+      alert("Por favor complete nombre y precio del pack.");
+      return;
+    }
+
+    if (editingPack) {
+      updatePack(editingPack.id, newPack);
+      setEditingPack(null);
+      alert("Pack actualizado con éxito.");
+    } else {
+      addPack(newPack);
+      alert("Pack agregado con éxito.");
+    }
+
+    setIsAddingPack(false);
+    setNewPack({
+      name: '',
+      treatmentTypeId: treatmentTypes[0]?.id || '',
+      sessionCount: 6,
+      price: 0
+    });
+  };
+
+  const handleDeletePack = (id: string) => {
+    if (confirm("¿Estás seguro de eliminar este pack de sesiones?")) {
+      deletePack(id);
+    }
+  };
+
+  const handleEditPack = (pack: PackOfSessions) => {
+    setEditingPack(pack);
+    setNewPack({ ...pack });
+    setIsAddingPack(true);
   };
 
   const categoryLabels: Record<ProductCategory, string> = {
@@ -86,12 +159,17 @@ export const Inventory: React.FC = () => {
           {isAddingProduct && (
             <div className="glass-panel p-6 rounded-2xl border-2 border-aesthetic-300 shadow-md space-y-6 animate-slide-in">
               <div className="flex items-center justify-between pb-3 border-b border-aesthetic-200/20">
-                <h3 className="font-bold text-[#332724] text-sm">Cargar Nuevo Producto</h3>
+                <h3 className="font-bold text-[#332724] text-sm">
+                  {editingProduct ? 'Editar Producto' : 'Cargar Nuevo Producto'}
+                </h3>
                 <button 
-                  onClick={() => setIsAddingProduct(false)}
+                  onClick={() => {
+                    setIsAddingProduct(false);
+                    setEditingProduct(null);
+                  }}
                   className="px-2 py-1 rounded bg-aesthetic-100 text-aesthetic-600 hover:bg-aesthetic-200 text-xs font-bold"
                 >
-                  Cerrar
+                  <X className="w-4 h-4" />
                 </button>
               </div>
 
@@ -251,6 +329,7 @@ export const Inventory: React.FC = () => {
                     <th className="p-4 text-right">Precio Venta</th>
                     <th className="p-4 text-center">Stock</th>
                     <th className="p-4 text-center">Estado</th>
+                    <th className="p-4 text-center">Acciones</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-aesthetic-200/10">
@@ -287,6 +366,24 @@ export const Inventory: React.FC = () => {
                             {stockText}
                           </span>
                         </td>
+                        <td className="p-4 text-center">
+                          <div className="flex items-center justify-center space-x-2">
+                            <button
+                              onClick={() => handleEditProduct(prod)}
+                              className="p-1.5 rounded-lg text-aesthetic-500 hover:bg-aesthetic-100 transition-colors cursor-pointer"
+                              title="Editar"
+                            >
+                              <Edit2 className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteProduct(prod.id)}
+                              className="p-1.5 rounded-lg text-rose-400 hover:bg-rose-50 transition-colors cursor-pointer"
+                              title="Eliminar"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </td>
                       </tr>
                     );
                   })}
@@ -299,19 +396,113 @@ export const Inventory: React.FC = () => {
         {/* SESSION PACKS LIST (Takes 1/3) */}
         <div className="space-y-6">
           <div className="glass-panel p-5 rounded-2xl shadow-sm flex flex-col">
-            <div className="flex items-center space-x-2 pb-4 border-b border-aesthetic-200/20 mb-5">
-              <Tag className="w-5 h-5 text-aesthetic-500" />
-              <h3 className="text-sm font-bold text-[#332724]">Packs de Sesiones (POS)</h3>
+            <div className="flex items-center justify-between pb-4 border-b border-aesthetic-200/20 mb-5">
+              <div className="flex items-center space-x-2">
+                <Tag className="w-5 h-5 text-aesthetic-500" />
+                <h3 className="text-sm font-bold text-[#332724]">Packs de Sesiones</h3>
+              </div>
+              <button
+                onClick={() => setIsAddingPack(true)}
+                className="p-1.5 rounded-lg bg-aesthetic-100 text-aesthetic-600 hover:bg-aesthetic-200 transition-colors"
+                title="Nuevo Pack"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
             </div>
+
+            {isAddingPack && (
+              <div className="mb-6 p-4 rounded-xl border-2 border-aesthetic-200 bg-white space-y-4 animate-slide-in">
+                <h4 className="text-xs font-black text-[#332724] uppercase">{editingPack ? 'Editar Pack' : 'Crear Pack'}</h4>
+                <form onSubmit={handleAddPackSubmit} className="space-y-3">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-aesthetic-500 uppercase">Nombre</label>
+                    <input
+                      type="text"
+                      value={newPack.name}
+                      onChange={e => setNewPack({...newPack, name: e.target.value})}
+                      placeholder="Ej. Pack Criolipólisis x6"
+                      className="w-full px-3 py-2 border border-aesthetic-100 rounded-lg text-xs focus:outline-none bg-[#faf6f7]"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-aesthetic-500 uppercase">Tratamiento</label>
+                    <select
+                      value={newPack.treatmentTypeId}
+                      onChange={e => setNewPack({...newPack, treatmentTypeId: e.target.value})}
+                      className="w-full px-3 py-2 border border-aesthetic-100 rounded-lg text-xs focus:outline-none bg-[#faf6f7]"
+                    >
+                      {treatmentTypes.map(t => (
+                        <option key={t.id} value={t.id}>{t.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-aesthetic-500 uppercase">Cant. Sesiones</label>
+                      <input
+                        type="number"
+                        value={newPack.sessionCount}
+                        onChange={e => setNewPack({...newPack, sessionCount: parseInt(e.target.value) || 0})}
+                        className="w-full px-3 py-2 border border-aesthetic-100 rounded-lg text-xs focus:outline-none bg-[#faf6f7]"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-aesthetic-500 uppercase">Precio ($)</label>
+                      <input
+                        type="number"
+                        value={newPack.price}
+                        onChange={e => setNewPack({...newPack, price: parseFloat(e.target.value) || 0})}
+                        className="w-full px-3 py-2 border border-aesthetic-100 rounded-lg text-xs focus:outline-none bg-[#faf6f7]"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex space-x-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsAddingPack(false);
+                        setEditingPack(null);
+                      }}
+                      className="flex-1 py-2 rounded-lg border border-aesthetic-100 text-[10px] font-bold text-aesthetic-400"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="submit"
+                      className="flex-1 py-2 rounded-lg bg-aesthetic-500 text-white text-[10px] font-black uppercase tracking-widest shadow-sm"
+                    >
+                      {editingPack ? 'Guardar' : 'Crear'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
 
             <div className="space-y-4">
               {packs.map(pack => {
                 const treatment = treatmentTypes.find(t => t.id === pack.treatmentTypeId);
                 return (
-                  <div key={pack.id} className="p-4 rounded-xl border border-aesthetic-200/10 bg-white/40 space-y-3">
+                  <div key={pack.id} className="p-4 rounded-xl border border-aesthetic-200/20 bg-white/40 space-y-3 group hover:border-aesthetic-300 transition-colors">
                     <div className="flex items-start justify-between">
                       <h4 className="font-extrabold text-[#332724] text-xs">{pack.name}</h4>
-                      <span className="text-xs font-black text-aesthetic-600">${pack.price.toLocaleString()}</span>
+                      <div className="flex flex-col items-end">
+                        <span className="text-xs font-black text-aesthetic-600">${pack.price.toLocaleString()}</span>
+                        <div className="flex items-center space-x-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                           <button
+                             onClick={() => handleEditPack(pack)}
+                             className="p-1 rounded bg-aesthetic-50 text-aesthetic-500 hover:bg-aesthetic-100"
+                           >
+                             <Edit2 className="w-3 h-3" />
+                           </button>
+                           <button
+                             onClick={() => handleDeletePack(pack.id)}
+                             className="p-1 rounded bg-rose-50 text-rose-400 hover:bg-rose-100"
+                           >
+                             <Trash2 className="w-3 h-3" />
+                           </button>
+                        </div>
+                      </div>
                     </div>
                     <div className="flex items-center justify-between text-[11px] text-aesthetic-500 font-semibold">
                       <span>Carga: {pack.sessionCount} sesiones</span>

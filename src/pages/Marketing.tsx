@@ -1,10 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import {
-  Zap, Users, MessageSquare, AlertTriangle,
-  Gift, Calendar, ArrowUpRight, Send, Edit3, X, CheckCircle2
+  Zap, MessageSquare, AlertTriangle,
+  Gift, Calendar, Send, Edit3, X, CheckCircle2
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
-import type { Client, PurchasedPack, EvolutionaryRecord } from '../types';
+import type { Client } from '../types';
 
 export const Marketing: React.FC = () => {
   const { clients, purchasedPacks, evolutionaryRecords, treatmentTypes, updateClient } = useStore();

@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { useStore } from '../store/useStore';
 import { 
   Plus, Search, FileText, Camera, ChevronRight, 
-  Save, Shield, Users, MessageSquare, CheckCircle, Smartphone
+  Save, Shield, Users, CheckCircle, AlertTriangle, X
 } from 'lucide-react';
-import type { SkinPhototype, PackStatus } from '../types';
+import type { SkinPhototype, EvolutionaryRecord } from '../types';
 
 export const Clients: React.FC = () => {
   const { 
