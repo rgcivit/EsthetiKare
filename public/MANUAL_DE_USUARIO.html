@@ -3,35 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manual de Usuario - EsthetiKare Pro</title>
+    <title>Guía Completa - EsthetiKare Pro</title>
     <style>
-        body { font-family: sans-serif; line-height: 1.6; color: #332724; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #faf6f7; }
-        h1, h2, h3 { color: #500732; }
-        hr { border: 0; border-top: 1px solid #ddd; margin: 20px 0; }
-        .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; background: #e2d1d9; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #332724; max-width: 900px; margin: 0 auto; padding: 20px; background-color: #faf6f7; }
+        h1 { color: #500732; text-align: center; border-bottom: 2px solid #500732; padding-bottom: 10px; }
+        h2 { color: #500732; border-left: 5px solid #500732; padding-left: 10px; margin-top: 40px; background: #e2d1d933; }
+        h3 { color: #8a1d5a; margin-top: 25px; }
+        .step { background: white; padding: 15px; border-radius: 12px; border: 1px solid #e2d1d9; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .step-num { font-weight: bold; color: #500732; background: #e2d1d9; width: 25px; height: 25px; display: inline-flex; items-center; justify-content: center; border-radius: 50%; margin-right: 10px; }
+        .important { background: #fff5f5; border-left: 4px solid #f56565; padding: 10px; margin: 15px 0; font-weight: bold; }
+        .tip { background: #f0fff4; border-left: 4px solid #48bb78; padding: 10px; margin: 15px 0; }
+        button { display: block; width: 100%; padding: 15px; background: #500732; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 30px; font-size: 16px; }
+        @media print { button { display: none; } }
     </style>
 </head>
 <body>
-    <h1>📖 MANUAL DE USUARIO - ESTHETIKARE PRO</h1>
-    <p>EsthetiKare Pro es la evolución digital para centros de estética, enfocada en la telemetría de equipos, el control clínico de pacientes y la reactivación comercial por WhatsApp.</p>
+    <h1>📖 GUÍA COMPLETA ESTHETIKARE PRO</h1>
+    <p style="text-align: center; font-style: italic;">Paso a paso para el dominio total de la aplicación.</p>
+
+    <h2>1. GESTIÓN DE PACIENTES (FICHAS)</h2>
+
+    <h3>¿Cómo registrar un paciente nuevo?</h3>
+    <div class="step"><span class="step-num">1</span> Entrá al módulo <strong>Fichas</strong>.</div>
+    <div class="step"><span class="step-num">2</span> Tocá el botón rosa con el signo <strong>+</strong> arriba a la derecha.</div>
+    <div class="step"><span class="step-num">3</span> Completá los datos (Nombre, Apellido, DNI son obligatorios).</div>
+    <div class="step"><span class="step-num">4</span> Dale a <strong>"Guardar Cliente"</strong>. Automáticamente aparecerá seleccionado.</div>
+
+    <h3>¿Cómo completar la Ficha Médica y Firma?</h3>
+    <div class="step"><span class="step-num">1</span> Con el cliente seleccionado, tocá la pestaña <strong>"Ficha Médica"</strong>.</div>
+    <div class="step"><span class="step-num">2</span> Registrá alergias y seleccioná el <strong>Fototipo de Fitzpatrick</strong>.</div>
+    <div class="step"><span class="step-num">3</span> Bajá hasta <strong>"Firma Digital"</strong> y pedí al paciente que firme con su dedo sobre el recuadro gris.</div>
+    <div class="step"><span class="step-num">4</span> Activá el interruptor de "Consentimiento Firmado" y tocá <strong>"Guardar Ficha Médica"</strong>.</div>
+
+    <h3>¿Cómo registrar una sesión (Antes y Después)?</h3>
+    <div class="step"><span class="step-num">1</span> En la pestaña <strong>"Evolución / Fotos"</strong>, tocá <strong>"Nueva Sesión"</strong>.</div>
+    <div class="step"><span class="step-num">2</span> Cargá los parámetros (disparos, potencia, etc.) y las zonas tratadas.</div>
+    <div class="step"><span class="step-num">3</span> Tocá los recuadros de fotos para abrir la cámara o galería.</div>
+    <div class="step"><span class="step-num">4</span> Escribí tus observaciones y dale a <strong>"Registrar Sesión"</strong>.</div>
+
+    <h2>2. INVENTARIO Y PACKS</h2>
+
+    <h3>¿Cómo cargar o modificar productos?</h3>
+    <div class="step"><span class="step-num">1</span> Entrá a <strong>Inventario</strong>.</div>
+    <div class="step"><span class="step-num">2</span> <strong>Para cargar:</strong> Usá el botón "Agregar Producto".</div>
+    <div class="step"><span class="step-num">3</span> <strong>Para modificar:</strong> Buscá el producto en la tabla y tocá el ícono del <strong>Lápiz azul</strong>.</div>
+    <div class="step"><span class="step-num">4</span> Cambiá los datos (nombre, precio, stock) y dale a <strong>"Actualizar Producto"</strong>.</div>
+    <div class="step"><span class="step-num">5</span> <strong>Para borrar:</strong> Tocá el <strong>tacho de basura rojo</strong> y confirmá.</div>
+
+    <h3>¿Cómo gestionar los Packs de Sesiones?</h3>
+    <div class="step"><span class="step-num">1</span> En la columna derecha de Inventario, tocá el <strong>+</strong> para crear un pack nuevo.</div>
+    <div class="step"><span class="step-num">2</span> Asignale un nombre (ej: "Pack Glúteos x6") y elegí a qué tratamiento pertenece.</div>
+    <div class="step"><span class="step-num">3</span> Poné el precio total y la cantidad de sesiones.</div>
+    <div class="step"><span class="step-num">4</span> Para editar uno existente, pasá el mouse/dedo sobre el pack y usá los botones pequeños de editar o borrar que aparecen.</div>
+
+    <h2>3. VENTAS Y CONTROL DE SESIONES</h2>
+
+    <h3>¿Cómo realizar una venta (POS)?</h3>
+    <div class="step"><span class="step-num">1</span> Andá a <strong>POS</strong>.</div>
+    <div class="step"><span class="step-num">2</span> Buscá al cliente por DNI o nombre.</div>
+    <div class="step"><span class="step-num">3</span> Seleccioná los productos o packs del catálogo.</div>
+    <div class="step"><span class="step-num">4</span> Elegí el medio de pago y tocá <strong>"Finalizar Venta"</strong>.</div>
+    <div class="important">Si vendiste un Pack, el sistema le cargará automáticamente las sesiones al cliente en su ficha.</div>
+
+    <h3>¿Cómo descontar una sesión del Roadmap?</h3>
+    <div class="step"><span class="step-num">1</span> Buscá al paciente en <strong>Fichas</strong>.</div>
+    <div class="step"><span class="step-num">2</span> En la pestaña <strong>General</strong>, verás sus packs activos.</div>
+    <div class="step"><span class="step-num">3</span> Tocá <strong>"Descontar Sesión"</strong>. Verás que un circulito del Roadmap se marca con una tilde.</div>
+    <div class="step"><span class="step-num">4</span> <strong>Confirmación:</strong> El sistema te preguntará si querés enviar el saldo por WhatsApp. ¡Recomendado!</div>
+
+    <h2>4. REACTIVACIÓN COMERCIAL</h2>
+
+    <h3>¿Cómo recuperar clientes inactivos?</h3>
+    <div class="step"><span class="step-num">1</span> Entrá a <strong>Reactivación</strong>.</div>
+    <div class="step"><span class="step-num">2</span> Seleccioná el filtro (ej: "Inactivos +30d"). El sistema te dirá cuántos hay.</div>
+    <div class="step"><span class="step-num">3</span> Tocá <strong>"Reactivar"</strong> al lado de un paciente.</div>
+    <div class="step"><span class="step-num">4</span> Revisá o editá el mensaje de la plantilla y dale a <strong>"Enviar a WhatsApp"</strong>. Se abrirá su chat automáticamente.</div>
+
+    <h2>5. SOPORTE TÉCNICO DE EQUIPOS</h2>
+
+    <h3>¿Cómo pedir asistencia técnica?</h3>
+    <div class="step"><span class="step-num">1</span> Entrá a <strong>Equipos</strong>.</div>
+    <div class="step"><span class="step-num">2</span> Buscá la máquina que tiene el problema.</div>
+    <div class="step"><span class="step-num">3</span> Tocá <strong>"Reportar Falla / Service"</strong>.</div>
+    <div class="step"><span class="step-num">4</span> Describí el problema y, al terminar, tocá <strong>"Enviar por WhatsApp a Soporte"</strong>. RGCivit recibirá el reporte con el N° de serie y horas de uso de tu equipo.</div>
+
+    <h2>6. CAJA DIARIA</h2>
+    <div class="step"><span class="step-num">1</span> <strong>Apertura:</strong> Al empezar el día, cargá el efectivo inicial.</div>
+    <div class="step"><span class="step-num">2</span> <strong>Transacciones:</strong> Si hacés un gasto (ej: limpieza), registralo en "Nueva Transacción" como Egreso.</div>
+    <div class="step"><span class="step-num">3</span> <strong>Cierre:</strong> Al finalizar, tocá "Cerrar Caja". Contá el dinero real y cargalo. El sistema te dirá si hubo sobrante o faltante.</div>
+
     <hr>
-    <h2>1. ACCESO Y SEGURIDAD</h2>
-    <ul>
-        <li><strong>Ingreso:</strong> Cada profesional tiene un PIN de 4 dígitos único.</li>
-        <li><strong>Bloqueo Automático:</strong> Si la app no se usa por 10 minutos, se bloqueará sola.</li>
-    </ul>
-    <hr>
-    <h2>2. MÓDULOS DEL SISTEMA</h2>
-    <h3>🏠 Dashboard</h3>
-    <p>Listado de turnos, KPIs de stock y caja.</p>
-    <h3>👥 Fichas de Pacientes</h3>
-    <p>Registro de alergias, consentimiento firmado en pantalla y Roadmap de sesiones.</p>
-    <h3>⚡ Reactivación</h3>
-    <p>Marketing inteligente por WhatsApp para recuperar clientes inactivos.</p>
-    <h3>🛡️ Equipos</h3>
-    <p>Control técnico de aparatología y reportes directos a RGCivit.</p>
-    <hr>
-    <p><em>Desarrollado por Rodrigo Guevara Civit - 2026</em></p>
-    <button onclick="window.print()">Imprimir / Guardar como PDF</button>
+    <p style="text-align: center; color: #500732; font-weight: bold;">© 2026 - Rodrigo Guevara Civit para EsthetiKare Pro</p>
+    <button onclick="window.print()">DESCARGAR GUÍA EN PDF / IMPRIMIR</button>
 </body>
 </html>
