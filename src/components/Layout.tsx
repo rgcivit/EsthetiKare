@@ -162,16 +162,14 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             const isActive = location.pathname === item.href;
             if (item.external) {
               return (
-                <a
+                <button
                   key={item.name}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 text-aesthetic-700/80 hover:bg-aesthetic-100/50 hover:text-aesthetic-900"
+                  onClick={() => window.location.href = item.href}
+                  className="w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 text-aesthetic-700/80 hover:bg-aesthetic-100/50 hover:text-aesthetic-900 border-none bg-transparent cursor-pointer text-left"
                 >
                   <item.icon className="w-5 h-5 text-aesthetic-400/80" />
                   <span>{item.name}</span>
-                </a>
+                </button>
               );
             }
             return (
@@ -419,16 +417,17 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 const isActive = location.pathname === item.href;
                 if (item.external) {
                   return (
-                    <a
+                    <button
                       key={item.name}
-                      href={item.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all text-aesthetic-700/80 hover:bg-aesthetic-100/50"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        window.location.href = item.href;
+                      }}
+                      className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all text-aesthetic-700/80 hover:bg-aesthetic-100/50 border-none bg-transparent cursor-pointer text-left"
                     >
                       <item.icon className="w-5 h-5 text-aesthetic-400" />
                       <span>{item.name}</span>
-                    </a>
+                    </button>
                   );
                 }
                 return (
