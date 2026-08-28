@@ -55,22 +55,25 @@ export const Dashboard: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-aesthetic-200/40 via-aesthetic-100/30 to-aesthetic-50 p-6 md:p-8 rounded-3xl border border-aesthetic-200/20 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
+      <div className="bg-gradient-to-br from-white via-aesthetic-50/40 to-aesthetic-100/10 p-6 md:p-10 rounded-[2.5rem] border border-aesthetic-200/20 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-8 relative overflow-hidden">
+        {/* Decorative background element */}
+        <div className="absolute top-0 right-0 w-48 h-48 bg-aesthetic-500/5 rounded-full -mr-24 -mt-24 blur-3xl"></div>
+
+        <div className="flex flex-col sm:flex-row items-center gap-8 relative z-10 w-full">
           <img
             src="/logo.png"
-            alt="EsthetiKare Logo"
-            className="w-20 h-20 md:w-24 md:h-24 rounded-2xl shadow-xl border-2 border-white/50 object-cover shrink-0"
+            alt="EK Logo"
+            className="w-20 h-20 md:w-24 md:h-24 rounded-3xl shadow-xl shadow-aesthetic-200/40 object-contain shrink-0 bg-white"
           />
-          <div className="text-center sm:text-left">
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#332724]">
+          <div className="text-center sm:text-left flex-1 min-w-0">
+            <h1 className="text-2xl md:text-4xl font-black tracking-tighter text-[#332724] leading-tight">
               ¡Hola, {currentUser?.name || 'Especialista'}!
             </h1>
-            <p className="text-sm text-aesthetic-700/80 mt-1">
-              Bienvenido de nuevo. Esto es lo que está ocurriendo hoy, <br className="sm:hidden" />
-              <span className="font-bold text-aesthetic-800 capitalize">
+            <p className="text-sm md:text-base text-aesthetic-700/80 mt-1.5 font-semibold">
+              Bienvenido de nuevo. Esto es lo que ocurre hoy, <br className="sm:hidden" />
+              <span className="text-aesthetic-600">
                 {new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date())}
-              </span>.
+              </span>
             </p>
           </div>
         </div>

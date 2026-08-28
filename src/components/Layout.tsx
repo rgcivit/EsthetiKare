@@ -146,14 +146,14 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       <aside className="hidden md:flex flex-col w-64 bg-aesthetic-100/40 border-r border-aesthetic-200/30 shrink-0 backdrop-blur-md">
         {/* Logo / Brand */}
         <div className="h-16 flex items-center px-6 border-b border-aesthetic-200/20">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
             <img
               src="/logo.png"
               alt="EsthetiKare Logo"
-              className="w-8 h-8 rounded-lg shadow-sm"
+              className="w-9 h-9 rounded-lg shadow-sm object-contain bg-white p-0.5"
             />
-            <span className="text-lg font-semibold tracking-tight text-aesthetic-900">
-              Estheti<span className="text-aesthetic-500 font-extrabold">Kare</span>
+            <span className="text-lg font-bold tracking-tight text-aesthetic-900">
+              Estheti<span className="text-aesthetic-500 font-black">Kare</span>
             </span>
           </div>
         </div>
@@ -240,7 +240,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             <img
               src="/logo.png"
               alt="EsthetiKare Logo"
-              className="w-8 h-8 rounded-lg"
+              className="w-10 h-10 rounded-lg object-contain bg-white p-0.5 shadow-sm"
             />
             <span className="text-lg font-bold text-aesthetic-900">EsthetiKare</span>
           </div>
