@@ -64,7 +64,7 @@ export const Dashboard: React.FC = () => {
             <img
               src="/logo.png"
               alt="EK Logo"
-              className="w-full h-full object-contain object-center"
+              className="w-full h-full object-cover scale-110"
             />
           </div>
           <div className="text-center sm:text-left flex-1 min-w-0">
