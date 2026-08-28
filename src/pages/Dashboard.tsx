@@ -60,11 +60,13 @@ export const Dashboard: React.FC = () => {
         <div className="absolute top-0 right-0 w-48 h-48 bg-aesthetic-500/5 rounded-full -mr-24 -mt-24 blur-3xl"></div>
 
         <div className="flex flex-col sm:flex-row items-center gap-8 relative z-10 w-full">
-          <img
-            src="/logo.png"
-            alt="EK Logo"
-            className="w-20 h-20 md:w-24 md:h-24 rounded-3xl shadow-xl shadow-aesthetic-200/40 object-contain shrink-0 bg-white"
-          />
+          <div className="w-20 h-20 md:w-24 md:h-24 rounded-3xl overflow-hidden bg-white shadow-xl shadow-aesthetic-200/40 flex items-center justify-center shrink-0 border border-aesthetic-100">
+            <img
+              src="/logo.png"
+              alt="EK Logo"
+              className="w-full h-full object-contain object-center"
+            />
+          </div>
           <div className="text-center sm:text-left flex-1 min-w-0">
             <h1 className="text-2xl md:text-4xl font-black tracking-tighter text-[#332724] leading-tight">
               ¡Hola, {currentUser?.name || 'Especialista'}!
