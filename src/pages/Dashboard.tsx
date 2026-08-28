@@ -55,19 +55,22 @@ export const Dashboard: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-aesthetic-200/40 via-aesthetic-100/30 to-aesthetic-50 p-6 md:p-8 rounded-3xl border border-aesthetic-200/20 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-        <div className="flex items-center space-x-4">
+      <div className="bg-gradient-to-r from-aesthetic-200/40 via-aesthetic-100/30 to-aesthetic-50 p-6 md:p-8 rounded-3xl border border-aesthetic-200/20 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
           <img
             src="/logo.png"
-            alt="Logo"
-            className="w-16 h-16 rounded-2xl shadow-md border border-white"
+            alt="EsthetiKare Logo"
+            className="w-20 h-20 md:w-24 md:h-24 rounded-2xl shadow-xl border-2 border-white/50 object-cover shrink-0"
           />
-          <div>
+          <div className="text-center sm:text-left">
             <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#332724]">
               ¡Hola, {currentUser?.name || 'Especialista'}!
             </h1>
             <p className="text-sm text-aesthetic-700/80 mt-1">
-              Bienvenido de nuevo. Esto es lo que está ocurriendo hoy, <span className="font-bold text-aesthetic-800 capitalize">{new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date())}</span>.
+              Bienvenido de nuevo. Esto es lo que está ocurriendo hoy, <br className="sm:hidden" />
+              <span className="font-bold text-aesthetic-800 capitalize">
+                {new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date())}
+              </span>.
             </p>
           </div>
         </div>
