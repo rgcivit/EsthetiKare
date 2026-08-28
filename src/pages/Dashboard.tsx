@@ -56,13 +56,20 @@ export const Dashboard: React.FC = () => {
     <div className="space-y-8">
       {/* Welcome Banner */}
       <div className="bg-gradient-to-r from-aesthetic-200/40 via-aesthetic-100/30 to-aesthetic-50 p-6 md:p-8 rounded-3xl border border-aesthetic-200/20 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#332724]">
-            ¡Hola, {currentUser?.name || 'Especialista'}!
-          </h1>
-          <p className="text-sm text-aesthetic-700/80 mt-1">
-            Bienvenido de nuevo. Esto es lo que está ocurriendo hoy, <span className="font-bold text-aesthetic-800 capitalize">{new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date())}</span>.
-          </p>
+        <div className="flex items-center space-x-4">
+          <img
+            src="/logo.png"
+            alt="Logo"
+            className="w-16 h-16 rounded-2xl shadow-md border border-white"
+          />
+          <div>
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#332724]">
+              ¡Hola, {currentUser?.name || 'Especialista'}!
+            </h1>
+            <p className="text-sm text-aesthetic-700/80 mt-1">
+              Bienvenido de nuevo. Esto es lo que está ocurriendo hoy, <span className="font-bold text-aesthetic-800 capitalize">{new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date())}</span>.
+            </p>
+          </div>
         </div>
         <div className="flex flex-wrap gap-3">
           <button 

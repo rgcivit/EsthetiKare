@@ -147,9 +147,11 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
         {/* Logo / Brand */}
         <div className="h-16 flex items-center px-6 border-b border-aesthetic-200/20">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-aesthetic-500 to-aesthetic-400 flex items-center justify-center text-white font-bold text-lg shadow-sm">
-              E
-            </div>
+            <img
+              src="/logo.png"
+              alt="EsthetiKare Logo"
+              className="w-8 h-8 rounded-lg shadow-sm"
+            />
             <span className="text-lg font-semibold tracking-tight text-aesthetic-900">
               Estheti<span className="text-aesthetic-500 font-extrabold">Kare</span>
             </span>
@@ -235,9 +237,11 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
         {/* MOBILE HEADER */}
         <header className="md:hidden h-16 bg-aesthetic-50/70 border-b border-aesthetic-200/20 flex items-center justify-between px-4 shrink-0 z-10 backdrop-blur-md">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-aesthetic-500 to-aesthetic-400 flex items-center justify-center text-white font-bold text-lg">
-              E
-            </div>
+            <img
+              src="/logo.png"
+              alt="EsthetiKare Logo"
+              className="w-8 h-8 rounded-lg"
+            />
             <span className="text-lg font-bold text-aesthetic-900">EsthetiKare</span>
           </div>
 
