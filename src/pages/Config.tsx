@@ -12,12 +12,14 @@ export const Config: React.FC = () => {
   const handleExport = () => {
     const {
       clients, appointments, evolutionaryRecords, products, 
-      treatmentTypes, cabinets, professionals, packs, sales, cashSessions
+      treatmentTypes, cabinets, professionals, packs, sales, cashSessions,
+      purchasedPacks, serviceReports
     } = storeState;
 
     const dataToExport = {
       clients, appointments, evolutionaryRecords, products, 
-      treatmentTypes, cabinets, professionals, packs, sales, cashSessions
+      treatmentTypes, cabinets, professionals, packs, sales, cashSessions,
+      purchasedPacks, serviceReports
     };
 
     exportBackup(dataToExport);
