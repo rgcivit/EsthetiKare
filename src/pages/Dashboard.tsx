@@ -54,33 +54,27 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      {/* Welcome Banner */}
-      <div className="bg-aesthetic-100/40 p-6 md:p-10 rounded-[2.5rem] border border-aesthetic-200/20 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-8 relative overflow-hidden text-[#500732]">
-        {/* Decorative background elements */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-aesthetic-500/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-aesthetic-400/5 rounded-full -ml-24 -mb-24 blur-3xl"></div>
-
+      {/* Welcome Banner - Unified with background */}
+      <div className="p-6 md:p-10 flex flex-col items-center justify-center relative overflow-hidden text-[#500732]">
         <div className="flex flex-col items-center relative z-10 w-full mb-4">
-          <div className="w-24 h-24 md:w-32 md:h-32 rounded-3xl overflow-hidden shadow-2xl shadow-aesthetic-500/20 border-2 border-white/50">
-            <img
-              src="/logo.png"
-              alt="EsthetiKare Pro"
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div className="text-center mt-6 flex-1 min-w-0">
-            <h1 className="text-3xl md:text-5xl font-black tracking-tighter leading-tight">
+          <img
+            src="/logo.png"
+            alt="EsthetiKare Pro"
+            className="h-28 md:h-40 w-auto object-contain drop-shadow-2xl mb-6"
+          />
+          <div className="text-center flex-1 min-w-0">
+            <h1 className="text-3xl md:text-6xl font-black tracking-tighter leading-tight">
               ¡Hola, {currentUser?.name || 'Especialista'}!
             </h1>
-            <p className="text-sm md:text-lg opacity-80 mt-2 font-semibold">
+            <p className="text-sm md:text-xl opacity-70 mt-3 font-semibold">
               Bienvenido de nuevo. Esto es lo que ocurre hoy, <br className="sm:hidden" />
-              <span className="bg-white/40 px-3 py-1 rounded-full border border-white/50 inline-block mt-2 sm:mt-0">
+              <span className="font-bold text-aesthetic-600">
                 {new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date())}
               </span>
             </p>
           </div>
         </div>
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-4 mt-4">
           <button 
             onClick={() => navigate('/agenda')}
             className="inline-flex items-center space-x-2 bg-aesthetic-500 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-sm hover:bg-aesthetic-600 transition-colors cursor-pointer"
