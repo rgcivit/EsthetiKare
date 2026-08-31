@@ -370,18 +370,26 @@ export const useStore = create<StoreState>()(persist((set, get) => ({
 
   activateApp: (key) => {
     const id = get().installationId;
-    // SECRET FORMULA: The key must be "EK" + Reverse(ID) + "PRO" (NO HYPHEN required)
-    const reversedId = id.split('').reverse().join('');
-    const expectedKeyWithHyphen = `EK-${reversedId}PRO`.toUpperCase();
-    const expectedKeyWithoutHyphen = `EK${reversedId}PRO`.toUpperCase();
 
-    const inputKey = key.trim().toUpperCase();
+    // NEW OBFUSCATED FORMULA
+    // Part 1: First 4 chars shifted +2 (A->C, 1->3)
+    const part1 = id.substring(0, 4).split('').map(c => {
+      const code = c.charCodeAt(0);
+      return String.fromCharCode(code + 2);
+    }).join('');
 
-    if (inputKey === expectedKeyWithHyphen || inputKey === expectedKeyWithoutHyphen) {
+    // Part 2: Last 4 chars reversed
+    const part2 = id.substring(4, 8).split('').reverse().join('');
+
+    const expectedKey = `EK-${part1}-${part2}-PRO`.toUpperCase();
+    const cleanKey = expectedKey.replace(/-/g, '');
+    const inputKey = key.trim().toUpperCase().replace(/-/g, '');
+
+    if (inputKey === cleanKey) {
       set({ isActivated: true });
       return { success: true };
     }
-    return { success: false, error: 'Código de activación inválido. Verifique con el proveedor.' };
+    return { success: false, error: 'Código de activación inválido. Contacte a soporte técnico.' };
   },
 
   // Authentication / Active Session
