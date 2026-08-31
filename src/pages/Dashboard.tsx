@@ -57,13 +57,11 @@ export const Dashboard: React.FC = () => {
       {/* Welcome Banner - Unified with background */}
       <div className="p-6 md:p-10 flex flex-col items-center justify-center relative overflow-hidden text-[#500732]">
         <div className="flex flex-col items-center relative z-10 w-full mb-4">
-          <div className="h-24 w-24 md:h-32 md:w-32 bg-white rounded-3xl overflow-hidden flex items-center justify-center shadow-lg border border-pink-100 p-2 mb-6">
-            <img
-              src="/logo.png"
-              alt="EsthetiKare Pro"
-              className="w-full h-full object-contain object-center"
-            />
-          </div>
+          <img
+            src="/logo.png"
+            alt="EsthetiKare Pro"
+            className="h-28 md:h-44 w-auto object-contain mb-6 mx-auto drop-shadow-md"
+          />
           <div className="text-center flex-1 min-w-0">
             <h1 className="text-3xl md:text-6xl font-black tracking-tighter leading-tight">
               ¡Hola, {currentUser?.name || 'Especialista'}!
