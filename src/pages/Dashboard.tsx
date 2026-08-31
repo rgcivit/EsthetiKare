@@ -59,21 +59,21 @@ export const Dashboard: React.FC = () => {
         {/* Decorative background element */}
         <div className="absolute top-0 right-0 w-48 h-48 bg-aesthetic-500/5 rounded-full -mr-24 -mt-24 blur-3xl"></div>
 
-        <div className="flex flex-col items-center relative z-10 w-full">
-          <div className="w-24 h-24 md:w-32 md:h-32 mx-auto mb-4 rounded-3xl bg-white shadow-md flex items-center justify-center overflow-hidden border border-pink-100">
+        <div className="flex flex-col items-center relative z-10 w-full mb-4">
+          <div className="relative group">
             <img
               src="/logo.png"
-              alt="EsthetiKare"
-              className="w-full h-full object-cover"
+              alt="EsthetiKare Pro"
+              className="h-24 md:h-32 w-auto object-contain drop-shadow-xl transition-transform duration-500 hover:scale-105"
             />
           </div>
-          <div className="text-center flex-1 min-w-0">
-            <h1 className="text-2xl md:text-4xl font-black tracking-tighter text-[#332724] leading-tight">
+          <div className="text-center mt-6 flex-1 min-w-0">
+            <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-[#332724] leading-tight">
               ¡Hola, {currentUser?.name || 'Especialista'}!
             </h1>
-            <p className="text-sm md:text-base text-aesthetic-700/80 mt-1.5 font-semibold">
+            <p className="text-sm md:text-lg text-aesthetic-700/80 mt-2 font-semibold">
               Bienvenido de nuevo. Esto es lo que ocurre hoy, <br className="sm:hidden" />
-              <span className="text-aesthetic-600">
+              <span className="text-aesthetic-600 px-3 py-1 bg-white/50 rounded-full border border-white inline-block mt-2 sm:mt-0">
                 {new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date())}
               </span>
             </p>
