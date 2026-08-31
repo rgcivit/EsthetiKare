@@ -21,6 +21,11 @@ interface StoreState {
   purchasedPacks: PurchasedPack[];
   serviceReports: ServiceReport[];
 
+  // Activation & Security
+  isActivated: boolean;
+  installationId: string;
+  activateApp: (key: string) => { success: boolean; error?: string };
+
   // Authentication / Active Session
   currentUser: Professional | null;
   login: (pin: string) => { success: boolean; error?: string };
@@ -358,6 +363,22 @@ export const useStore = create<StoreState>()(persist((set, get) => ({
   cashSessions: mockCashSessions,
   purchasedPacks: [],
   serviceReports: [],
+
+  // Activation & Security State
+  isActivated: false,
+  installationId: Math.random().toString(36).substring(2, 10).toUpperCase(),
+
+  activateApp: (key) => {
+    const id = get().installationId;
+    // SECRET FORMULA: The key must be "EK-" + Reverse(ID) + "PRO"
+    const expectedKey = `EK-${id.split('').reverse().join('')}PRO`;
+
+    if (key.trim().toUpperCase() === expectedKey) {
+      set({ isActivated: true });
+      return { success: true };
+    }
+    return { success: false, error: 'Código de activación inválido. Verifique con el proveedor.' };
+  },
 
   // Authentication / Active Session
   currentUser: null,

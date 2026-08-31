@@ -12,34 +12,35 @@ import { CashRegister } from './pages/CashRegister';
 import { Config } from './pages/Config';
 import { Employees } from './pages/Employees';
 import { Login } from './components/Login';
+import { ActivationGuard } from './components/ActivationGuard';
 
 function App() {
   const currentUser = useStore((state) => state.currentUser);
 
-  if (!currentUser) {
-    return <Login />;
-  }
-
-  const isAdmin = currentUser.role === 'admin';
-
   return (
-    <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/clientes" element={<Clients />} />
-          <Route path="/agenda" element={<Agenda />} />
-          <Route path="/inventario" element={<Inventory />} />
-          <Route path="/equipos" element={<Machines />} />
-          <Route path="/marketing" element={<Marketing />} />
-          <Route path="/pos" element={<POS />} />
-          <Route path="/caja" element={<CashRegister />} />
-          {/* Admin Protected Routes */}
-          <Route path="/config" element={isAdmin ? <Config /> : <Navigate to="/" replace />} />
-          <Route path="/empleados" element={isAdmin ? <Employees /> : <Navigate to="/" replace />} />
-        </Routes>
-      </Layout>
-    </Router>
+    <ActivationGuard>
+      {currentUser ? (
+        <Router>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/clientes" element={<Clients />} />
+              <Route path="/agenda" element={<Agenda />} />
+              <Route path="/inventario" element={<Inventory />} />
+              <Route path="/equipos" element={<Machines />} />
+              <Route path="/marketing" element={<Marketing />} />
+              <Route path="/pos" element={<POS />} />
+              <Route path="/caja" element={<CashRegister />} />
+              {/* Admin Protected Routes */}
+              <Route path="/config" element={currentUser.role === 'admin' ? <Config /> : <Navigate to="/" replace />} />
+              <Route path="/empleados" element={currentUser.role === 'admin' ? <Employees /> : <Navigate to="/" replace />} />
+            </Routes>
+          </Layout>
+        </Router>
+      ) : (
+        <Login />
+      )}
+    </ActivationGuard>
   );
 }
 
