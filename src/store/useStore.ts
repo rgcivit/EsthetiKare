@@ -370,10 +370,14 @@ export const useStore = create<StoreState>()(persist((set, get) => ({
 
   activateApp: (key) => {
     const id = get().installationId;
-    // SECRET FORMULA: The key must be "EK-" + Reverse(ID) + "PRO"
-    const expectedKey = `EK-${id.split('').reverse().join('')}PRO`;
+    // SECRET FORMULA: The key must be "EK" + Reverse(ID) + "PRO" (NO HYPHEN required)
+    const reversedId = id.split('').reverse().join('');
+    const expectedKeyWithHyphen = `EK-${reversedId}PRO`.toUpperCase();
+    const expectedKeyWithoutHyphen = `EK${reversedId}PRO`.toUpperCase();
 
-    if (key.trim().toUpperCase() === expectedKey) {
+    const inputKey = key.trim().toUpperCase();
+
+    if (inputKey === expectedKeyWithHyphen || inputKey === expectedKeyWithoutHyphen) {
       set({ isActivated: true });
       return { success: true };
     }

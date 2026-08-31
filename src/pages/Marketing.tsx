@@ -50,18 +50,20 @@ export const Marketing: React.FC = () => {
   // Templates
   const getTemplate = (client: Client, segment: string) => {
     const name = client.firstName;
+    const centro = "EsthetiKare";
+
     switch (segment) {
       case 'inactive':
         const lastRecord = evolutionaryRecords.filter(r => r.clientId === client.id).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
         const treat = treatmentTypes.find(t => t.id === lastRecord?.treatmentTypeId);
-        return `¡Hola ${name}! Te extrañamos en el centro. Tenés un 20% OFF para retomar tu tratamiento de ${treat?.name || 'estética'} este mes. ¿Te reservo un lugar?`;
+        return `¡Hola ${name}! 🌸 En ${centro} tenemos una promo especial para vos: 20% OFF para retomar tu tratamiento de ${treat?.name || 'estética'} este mes. ¡Escribinos para reservar tu turno!`;
       case 'packs':
         const pack = purchasedPacks.find(p => p.pacienteId === client.id && (p.totalSesiones - p.sesionesConsumidas) === 1);
-        return `¡Hola ${name}! Te queda solo 1 sesión de tu pack ${pack?.nombreTratamiento}. ¡Aprovechá la promo de renovación con precio congelado!`;
+        return `¡Hola ${name}! 🌸 En ${centro} tenemos una promo especial para vos: tu pack de ${pack?.nombreTratamiento || 'tratamiento'} está por terminar. ¡Aprovechá la renovación con precio congelado! Escribinos para reservar tu lugar.`;
       case 'birthday':
-        return `¡Feliz cumpleaños ${name}! 🎂 Tenés un mimo esperándote en EsthetiKare: una sesión de hidratación facial de regalo con tu próximo turno. ¡Te esperamos!`;
+        return `¡Hola ${name}! 🌸 ¡Feliz cumpleaños! 🎂 En ${centro} tenemos un regalo especial para vos: una sesión de hidratación facial de regalo con tu próximo turno. ¡Te esperamos para festejar juntas!`;
       default:
-        return `Hola ${name}, ¿cómo estás?`;
+        return `Hola ${name}! 🌸`;
     }
   };
 
@@ -74,7 +76,12 @@ export const Marketing: React.FC = () => {
   const handleSendWhatsApp = () => {
     if (!selectedClient) return;
 
-    const phone = selectedClient.phone.replace(/\D/g, '');
+    // Directive 2: Clean phone number (remove non-digits and ensure country prefix)
+    let phone = selectedClient.phone.replace(/\D/g, '');
+    if (!phone.startsWith('549') && !phone.startsWith('54')) {
+      phone = '549' + phone; // Default to Argentina if missing
+    }
+
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(editedMessage)}`, '_blank');
 
     // Update tracking
