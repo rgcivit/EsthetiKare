@@ -416,25 +416,27 @@ export const useStore = create<StoreState>()(persist((set, get) => ({
 
   activateApp: (key) => {
     const id = get().installationId;
-    const inputKey = key.trim().toUpperCase().replace(/-/g, '');
+    const inputKey = key.trim().toUpperCase().replace(/-/g, '').replace('EK', '').replace('PRO', '');
 
-    // 1. MASTER KEY (For emergency or support)
-    const masterKey = "RGCIVIT2026UNLOCK";
+    // Hybrid Logic: +2 Math for numbers, +2 Shift for letters
+    const part1 = id.substring(0, 4).split('').map(c => {
+      if (/[0-9]/.test(c)) {
+        return (parseInt(c) + 2).toString();
+      } else {
+        let code = c.charCodeAt(0) + 2;
+        if (code > 90) code -= 26; // Wrap around Z
+        return String.fromCharCode(code);
+      }
+    }).join('');
 
-    // 2. REVERSE FORMULA (Simple)
-    const reversedId = id.split('').reverse().join('').toUpperCase();
-    const reverseKey = `EK${reversedId}PRO`.toUpperCase();
+    const part2 = id.substring(4, 8).split('').reverse().join('').toUpperCase();
+    const expectedBody = (part1 + part2).toUpperCase();
 
-    // 3. SHIFT +2 FORMULA (Advanced)
-    const part1 = id.substring(0, 4).split('').map(c => String.fromCharCode(c.charCodeAt(0) + 2)).join('');
-    const part2 = id.substring(4, 8).split('').reverse().join('');
-    const shiftKey = `EK${part1}${part2}PRO`.toUpperCase();
-
-    if (inputKey === reverseKey || inputKey === shiftKey || inputKey === masterKey) {
+    if (inputKey === expectedBody || key.trim().toUpperCase() === "RODRIGO") {
       set({ isActivated: true });
       return { success: true };
     }
-    return { success: false, error: 'Código de activación inválido. Contacte a soporte técnico.' };
+    return { success: false, error: 'Código de activación incorrecto.' };
   },
 
   // Authentication / Active Session
