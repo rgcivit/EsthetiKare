@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { 
+import { supabase } from '../utils/supabase';
+import type {
   Client, Appointment, EvolutionaryRecord, Product, 
   TreatmentType, CabinetMachine, Professional, PackOfSessions, 
   Sale, CashRegisterSession, AppointmentStatus, PaymentMethod,
@@ -20,6 +21,11 @@ interface StoreState {
   cashSessions: CashRegisterSession[];
   purchasedPacks: PurchasedPack[];
   serviceReports: ServiceReport[];
+
+  // Sync logic
+  isLoading: boolean;
+  lastSync: string | null;
+  syncData: (centerId: string) => Promise<{ success: boolean; error?: string }>;
 
   // Activation & Security
   isActivated: boolean;
@@ -364,22 +370,67 @@ export const useStore = create<StoreState>()(persist((set, get) => ({
   purchasedPacks: [],
   serviceReports: [],
 
+  // Sync Logic implementation
+  isLoading: false,
+  lastSync: null,
+
+  syncData: async (centerId: string) => {
+    set({ isLoading: true });
+    try {
+      // Parallel fetch for all relevant tables filtered by center_id
+      const [
+        { data: patients },
+        { data: inventory },
+        { data: purchased_packs },
+        { data: appointments },
+        { data: evolution }
+      ] = await Promise.all([
+        supabase.from('patients').select('*').eq('center_id', centerId),
+        supabase.from('inventory').select('*').eq('center_id', centerId),
+        supabase.from('purchased_packs').select('*').eq('center_id', centerId),
+        supabase.from('appointments').select('*').eq('center_id', centerId),
+        supabase.from('evolutionary_records').select('*').eq('center_id', centerId)
+      ]);
+
+      set({
+        clients: patients || [],
+        products: inventory || [],
+        purchasedPacks: purchased_packs || [],
+        appointments: appointments || [],
+        evolutionaryRecords: evolution || [],
+        lastSync: new Date().toISOString(),
+        isLoading: false
+      });
+
+      return { success: true };
+    } catch (error) {
+      console.error('Sync Error:', error);
+      set({ isLoading: false });
+      return { success: false, error: 'Error al sincronizar datos con la nube.' };
+    }
+  },
+
   // Activation & Security State
   isActivated: false,
   installationId: Math.random().toString(36).substring(2, 10).toUpperCase(),
 
   activateApp: (key) => {
     const id = get().installationId;
+    const inputKey = key.trim().toUpperCase().replace(/-/g, '');
 
-    // SIMPLIFIED AND ROBUST FORMULA FOR COMMERCIAL USE
-    // The key is just the ID REVERSED with "EK-" prefix and "-PRO" suffix
+    // 1. MASTER KEY (For emergency or support)
+    const masterKey = "RGCIVIT2026UNLOCK";
+
+    // 2. REVERSE FORMULA (Simple)
     const reversedId = id.split('').reverse().join('').toUpperCase();
-    const expectedKey = `EK-${reversedId}-PRO`.toUpperCase();
+    const reverseKey = `EK${reversedId}PRO`.toUpperCase();
 
-    const cleanExpected = expectedKey.replace(/-/g, '');
-    const cleanInput = key.trim().toUpperCase().replace(/-/g, '');
+    // 3. SHIFT +2 FORMULA (Advanced)
+    const part1 = id.substring(0, 4).split('').map(c => String.fromCharCode(c.charCodeAt(0) + 2)).join('');
+    const part2 = id.substring(4, 8).split('').reverse().join('');
+    const shiftKey = `EK${part1}${part2}PRO`.toUpperCase();
 
-    if (cleanInput === cleanExpected) {
+    if (inputKey === reverseKey || inputKey === shiftKey || inputKey === masterKey) {
       set({ isActivated: true });
       return { success: true };
     }
